@@ -1,0 +1,34 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node services/user-service/server.js",
+    "dev:user": "nodemon services/user-service/server.js",
+    "dev:book": "nodemon services/book-service/server.js",
+    "dev:borrow": "nodemon services/borrow-service/server.js",
+    "dev:logging": "nodemon services/logging-service/server.js",
+    "dev:gateway": "nodemon api-gateway/server.js",
+    "dev:all": "concurrently \"npm run dev:user\" \"npm run dev:book\" \"npm run dev:borrow\" \"npm run dev:logging\" \"npm run dev:gateway\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "http-proxy-middleware": "^3.0.5",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.2",
+    "morgan": "^1.10.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.10"
+  }
+}
