@@ -8,7 +8,6 @@ require("dotenv").config();
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(morgan("dev"));
 
 // Lấy port từ .env (bạn đã có trong backend/.env)
 const USER_SERVICE = `http://localhost:${process.env.USER_PORT || 5001}`;
