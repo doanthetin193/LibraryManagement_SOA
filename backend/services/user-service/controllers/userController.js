@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const generateToken = require("../../../shared/utils/generateToken");
-const { sendLog } = require("../../../shared/utils/logger"); // ✅ thêm dòng này
+const { sendLog } = require("../../../shared/utils/logger");
 
 // POST /users/register
 const registerUser = async (req, res) => {
@@ -81,4 +81,31 @@ const getMe = async (req, res) => {
   });
 };
 
-module.exports = { registerUser, loginUser, getMe };
+// GET /users/:id (admin only) - Lấy thông tin user bằng ID
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    // ✅ Ghi log
+    await sendLog(
+      "User Service",
+      "get_user_by_id",
+      { id: req.user._id.toString(), username: req.user.username },
+      { targetUserId: req.params.id, targetUsername: user.username },
+      "info"
+    );
+
+    res.json({
+      _id: user._id,
+      username: user.username,
+      role: user.role,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { registerUser, loginUser, getMe, getUserById };

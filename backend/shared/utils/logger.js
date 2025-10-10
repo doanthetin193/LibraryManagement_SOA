@@ -1,6 +1,7 @@
 const axios = require("axios");
+const { getServiceConfig } = require("../config/services");
 
-const LOGGING_URL = process.env.LOGGING_URL || "http://localhost:5004";
+const LOGGING_URL = getServiceConfig("LOGGING_SERVICE").url;
 
 /**
  * Gửi log đến Logging Service
@@ -24,9 +25,19 @@ const sendLog = async (service, action, user = {}, details = {}, level = "info")
       timestamp: new Date(),
     };
 
-    await axios.post(LOGGING_URL, logData);
-  } catch {
-    // Silently handle logging errors
+    await axios.post(LOGGING_URL, logData, {
+      timeout: 5000, // 5 second timeout
+    });
+  } catch (error) {
+    // Log to console if logging service is unavailable
+    console.error(`[${service}] Failed to send log to logging service:`, {
+      action,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+    
+    // Could also write to local log file as fallback
+    // or send to another logging system
   }
 };
 

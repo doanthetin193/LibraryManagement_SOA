@@ -12,11 +12,31 @@ const createLog = async (req, res) => {
   }
 };
 
-// GET /logs (admin) -> xem tất cả log
+// GET /logs (admin) -> xem tất cả log với pagination
 const getLogs = async (req, res) => {
   try {
-    const logs = await Log.find().sort({ createdAt: -1 });
-    res.json(logs);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    // Get total count for pagination info
+    const total = await Log.countDocuments();
+    
+    // Get paginated logs
+    const logs = await Log.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      data: logs,
+      pagination: {
+        current: page,
+        pages: Math.ceil(total / limit),
+        total: total,
+        limit: limit
+      }
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

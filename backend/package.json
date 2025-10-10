@@ -10,7 +10,8 @@
     "dev:borrow": "nodemon services/borrow-service/server.js",
     "dev:logging": "nodemon services/logging-service/server.js",
     "dev:gateway": "nodemon api-gateway/server.js",
-    "dev:all": "concurrently \"npm run dev:user\" \"npm run dev:book\" \"npm run dev:borrow\" \"npm run dev:logging\" \"npm run dev:gateway\""
+    "dev:all": "concurrently \"npm run dev:user\" \"npm run dev:book\" \"npm run dev:borrow\" \"npm run dev:logging\" \"npm run dev:gateway\"",
+    "health": "node scripts/health-check.js"
   },
   "keywords": [],
   "author": "",
