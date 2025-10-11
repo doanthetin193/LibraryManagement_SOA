@@ -21,7 +21,3 @@ export const userAPI = createAPI("http://localhost:5001");
 export const bookAPI = createAPI("http://localhost:5002");
 export const borrowAPI = createAPI("http://localhost:5003");
 export const logAPI = createAPI("http://localhost:5004");
-
-// Default export (sẽ dùng gateway sau)
-const api = createAPI("http://localhost:5000");
-export default api;

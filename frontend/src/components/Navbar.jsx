@@ -42,6 +42,11 @@ const Navbar = () => {
               My Borrows
             </Button>
           )}
+          {user && (
+            <Button color="inherit" component={Link} to="/profile">
+              Profile
+            </Button>
+          )}
           {user && user.role === "admin" && (
             <Button color="inherit" component={Link} to="/admin">
               Admin

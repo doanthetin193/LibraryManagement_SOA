@@ -89,14 +89,7 @@ const getUserById = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     
-    // ✅ Ghi log
-    await sendLog(
-      "User Service",
-      "get_user_by_id",
-      { id: req.user._id.toString(), username: req.user.username },
-      { targetUserId: req.params.id, targetUsername: user.username },
-      "info"
-    );
+    // Skip logging for getUserById to avoid spam when fetching user details
 
     res.json({
       _id: user._id,
@@ -108,4 +101,36 @@ const getUserById = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getMe, getUserById };
+// GET /users (admin only) - Lấy tất cả users với pagination
+const getAllUsers = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const users = await User.find()
+      .select("-password")
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+    
+    const total = await User.countDocuments();
+    const pages = Math.ceil(total / limit);
+
+    // Skip logging for admin pagination requests to avoid spam
+
+    res.json({
+      data: users,
+      pagination: {
+        current: page,
+        pages,
+        total,
+        limit
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { registerUser, loginUser, getMe, getUserById, getAllUsers };

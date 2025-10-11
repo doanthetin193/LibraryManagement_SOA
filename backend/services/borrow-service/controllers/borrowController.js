@@ -27,7 +27,7 @@ const borrowBook = async (req, res) => {
     });
 
     // Cập nhật số lượng sách qua Book Service
-    await updateBookCopies(bookId, book.availableCopies - 1, token);
+    await updateBookCopies(bookId, book.availableCopies - 1);
 
     // ✅ Gửi log qua shared logger
     await sendLog(
@@ -69,7 +69,7 @@ const returnBook = async (req, res) => {
     await borrow.save();
 
     // Cập nhật số lượng sách qua Book Service
-    await updateBookCopies(borrow.book, book.availableCopies + 1, token);
+    await updateBookCopies(borrow.book, book.availableCopies + 1);
 
     // ✅ Gửi log qua shared logger
     await sendLog(
@@ -103,21 +103,42 @@ const getAllBorrows = async (req, res) => {
       .skip(skip)
       .limit(limit);
     
-    // Enhance borrow data with user and book information from respective services
-    const enhancedBorrows = await Promise.all(
-      borrows.map(async (borrow) => {
-        const [userResult, bookResult] = await Promise.allSettled([
-          getUserById(borrow.user, token),
-          getBookById(borrow.book)
-        ]);
+    // Get unique user and book IDs to minimize API calls
+    const userIds = [...new Set(borrows.map(b => b.user))];
+    const bookIds = [...new Set(borrows.map(b => b.book))];
 
-        const user = userResult.status === 'fulfilled' 
-          ? userResult.value 
-          : { _id: borrow.user, username: "Unknown User", role: "user" };
+    // Fetch users and books in parallel
+    const [usersResults, booksResults] = await Promise.allSettled([
+      Promise.allSettled(userIds.map(id => getUserById(id, token))),
+      Promise.allSettled(bookIds.map(id => getBookById(id)))
+    ]);
 
-        const book = bookResult.status === 'fulfilled'
-          ? bookResult.value
-          : { _id: borrow.book, title: "Book not found", author: "Unknown" };
+    // Create lookup maps
+    const usersMap = new Map();
+    const booksMap = new Map();
+
+    if (usersResults.status === 'fulfilled') {
+      userIds.forEach((id, index) => {
+        const result = usersResults.value[index];
+        usersMap.set(id.toString(), result.status === 'fulfilled' 
+          ? result.value 
+          : { _id: id, username: "Unknown User", role: "user" });
+      });
+    }
+
+    if (booksResults.status === 'fulfilled') {
+      bookIds.forEach((id, index) => {
+        const result = booksResults.value[index];
+        booksMap.set(id.toString(), result.status === 'fulfilled' 
+          ? result.value 
+          : { _id: id, title: "Book not found", author: "Unknown" });
+      });
+    }
+
+    // Enhance borrow data using lookup maps
+    const enhancedBorrows = borrows.map((borrow) => {
+        const user = usersMap.get(borrow.user.toString()) || { _id: borrow.user, username: "Unknown User", role: "user" };
+        const book = booksMap.get(borrow.book.toString()) || { _id: borrow.book, title: "Book not found", author: "Unknown" };
 
         return {
           ...borrow.toObject(),
@@ -132,8 +153,7 @@ const getAllBorrows = async (req, res) => {
             author: book.author,
           }
         };
-      })
-    );
+      });
 
     res.json({
       data: enhancedBorrows,

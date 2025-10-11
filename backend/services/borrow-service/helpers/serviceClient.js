@@ -67,15 +67,10 @@ const getBookById = async (bookId) => {
  * @param {number} availableCopies - New available copies count
  * @returns {Promise<Object>} Updated book data
  */
-const updateBookCopies = async (bookId, availableCopies, token) => {
+const updateBookCopies = async (bookId, availableCopies) => {
   try {
-    const response = await axios.put(`${BOOK_SERVICE_URL}/${bookId}`, 
-      { availableCopies },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
+    const response = await axios.put(`${BOOK_SERVICE_URL}/${bookId}/copies`, 
+      { availableCopies }
     );
     return response.data;
   } catch (error) {

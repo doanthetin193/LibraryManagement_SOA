@@ -13,9 +13,10 @@ const Books = () => {
   const fetchBooks = async () => {
     try {
       const res = await bookAPI.get("/");
-      setBooks(res.data);
-    } catch {
-      // Silently handle error
+      // Handle both old format (array) and new format (with data property)
+      setBooks(res.data.data || res.data);
+    } catch (error) {
+      console.error('Failed to fetch books for homepage:', error);
     } finally {
       setLoading(false);
     }
