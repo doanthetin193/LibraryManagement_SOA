@@ -1,6 +1,7 @@
 const axios = require("axios");
 const { getServiceConfig } = require("../config/services");
 
+// Logging service: Direct call to avoid circular dependency through Gateway
 const LOGGING_URL = getServiceConfig("LOGGING_SERVICE").url;
 
 /**
@@ -26,15 +27,17 @@ const sendLog = async (service, action, user = {}, details = {}, level = "info")
     };
 
     await axios.post(LOGGING_URL, logData, {
-      timeout: 5000, // 5 second timeout
+      timeout: 2000, // Reduce timeout to 2 seconds
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
   } catch (error) {
-    // Log to console if logging service is unavailable
-    console.error(`[${service}] Failed to send log to logging service:`, {
-      action,
-      error: error.message,
-      timestamp: new Date().toISOString()
-    });
+    // Silently fail for logging to avoid cascading errors
+    // Only log critical errors to console in development
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(`⚠️ [${service}] Logging failed: ${error.message}`);
+    }
     
     // Could also write to local log file as fallback
     // or send to another logging system

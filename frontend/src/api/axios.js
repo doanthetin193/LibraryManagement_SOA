@@ -16,8 +16,10 @@ const createAPI = (baseURL) => {
   return api;
 };
 
-// Export APIs cho từng service
-export const userAPI = createAPI("http://localhost:5001");
-export const bookAPI = createAPI("http://localhost:5002");
-export const borrowAPI = createAPI("http://localhost:5003");
-export const logAPI = createAPI("http://localhost:5004");
+// SOA Architecture: All requests go through API Gateway
+const API_GATEWAY_URL = "http://localhost:5000";
+
+export const userAPI = createAPI(`${API_GATEWAY_URL}/users`);
+export const bookAPI = createAPI(`${API_GATEWAY_URL}/books`);
+export const borrowAPI = createAPI(`${API_GATEWAY_URL}/borrows`);
+export const logAPI = createAPI(`${API_GATEWAY_URL}/logs`);

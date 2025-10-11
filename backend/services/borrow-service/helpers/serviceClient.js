@@ -2,8 +2,10 @@
 const axios = require("axios");
 const { getServiceConfig } = require("../../../shared/config/services");
 
-const USER_SERVICE_URL = getServiceConfig("USER_SERVICE").url;
-const BOOK_SERVICE_URL = getServiceConfig("BOOK_SERVICE").url;
+// SOA Architecture: Use API Gateway for service-to-service communication
+const API_GATEWAY_URL = getServiceConfig("API_GATEWAY").url;
+const USER_SERVICE_URL = `${API_GATEWAY_URL}/users`;
+const BOOK_SERVICE_URL = `${API_GATEWAY_URL}/books`;
 
 /**
  * Lấy thông tin user từ User Service bằng token (cho current user)
@@ -15,7 +17,8 @@ const getCurrentUser = async (token) => {
     const response = await axios.get(`${USER_SERVICE_URL}/me`, {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      timeout: 3000 // 3 second timeout for service calls
     });
     return response.data;
   } catch (error) {
@@ -34,7 +37,8 @@ const getUserById = async (userId, token) => {
     const response = await axios.get(`${USER_SERVICE_URL}/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      timeout: 3000
     });
     return response.data;
   } catch (error) {
@@ -54,7 +58,9 @@ const getUserById = async (userId, token) => {
  */
 const getBookById = async (bookId) => {
   try {
-    const response = await axios.get(`${BOOK_SERVICE_URL}/${bookId}`);
+    const response = await axios.get(`${BOOK_SERVICE_URL}/${bookId}`, {
+      timeout: 3000
+    });
     return response.data;
   } catch (error) {
     throw new Error(`Failed to get book: ${error.response?.data?.message || error.message}`);
@@ -70,7 +76,8 @@ const getBookById = async (bookId) => {
 const updateBookCopies = async (bookId, availableCopies) => {
   try {
     const response = await axios.put(`${BOOK_SERVICE_URL}/${bookId}/copies`, 
-      { availableCopies }
+      { availableCopies },
+      { timeout: 3000 }
     );
     return response.data;
   } catch (error) {

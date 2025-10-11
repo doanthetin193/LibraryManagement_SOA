@@ -4,14 +4,15 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node services/user-service/server.js",
+    "start": "node api-gateway/server.js",
     "dev:user": "nodemon services/user-service/server.js",
     "dev:book": "nodemon services/book-service/server.js",
     "dev:borrow": "nodemon services/borrow-service/server.js",
     "dev:logging": "nodemon services/logging-service/server.js",
     "dev:gateway": "nodemon api-gateway/server.js",
-    "dev:all": "concurrently \"npm run dev:user\" \"npm run dev:book\" \"npm run dev:borrow\" \"npm run dev:logging\" \"npm run dev:gateway\"",
-    "health": "node scripts/health-check.js"
+    "dev:all": "concurrently \"npm run dev:gateway\" \"npm run dev:user\" \"npm run dev:book\" \"npm run dev:borrow\" \"npm run dev:logging\"",
+    "health": "node scripts/health-check.js",
+    "soa": "echo \"🚀 Starting SOA Architecture with API Gateway...\" && npm run dev:all"
   },
   "keywords": [],
   "author": "",
