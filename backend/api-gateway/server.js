@@ -17,15 +17,11 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
-
 // Request logging middleware
 app.use((req, res, next) => {
   console.log(`🔀 Gateway: ${req.method} ${req.path} from ${req.ip}`);
   next();
 });
-
 
 const USER_SERVICE = getServiceConfig("USER_SERVICE").url;
 const BOOK_SERVICE = getServiceConfig("BOOK_SERVICE").url;
@@ -33,40 +29,26 @@ const BORROW_SERVICE = getServiceConfig("BORROW_SERVICE").url;
 const LOGGING_SERVICE = getServiceConfig("LOGGING_SERVICE").url;
 
 
-// SOA Gateway: Enhanced proxy configuration
+// SOA Gateway: Simple proxy configuration (no body parsing middleware before proxy)
 const proxyOptions = (target, serviceName) => ({
   target,
   changeOrigin: true,
-  timeout: 30000,
-  proxyTimeout: 30000,
   logLevel: 'warn',
   onError: (err, req, res) => {
     console.error(`❌ Gateway Error: ${serviceName} - ${err.message}`);
-    res.status(502).json({ 
-      success: false,
-      message: `Service ${serviceName} unavailable`, 
-      error: err.message,
-      timestamp: new Date().toISOString()
-    });
-  },
-  onProxyReq: (proxyReq, req, res) => {
-    // Forward original headers
-    if (req.body && Object.keys(req.body).length > 0) {
-      const bodyData = JSON.stringify(req.body);
-      proxyReq.setHeader('Content-Type', 'application/json');
-      proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
-      proxyReq.write(bodyData);
+    if (!res.headersSent) {
+      res.status(502).json({ 
+        success: false,
+        message: `Service ${serviceName} unavailable`, 
+        error: err.message,
+        timestamp: new Date().toISOString()
+      });
     }
-  },
-  onProxyRes: (proxyRes, req, res) => {
-    // Add gateway headers
-    proxyRes.headers['x-powered-by'] = 'SOA-Gateway';
-    proxyRes.headers['x-gateway-timestamp'] = new Date().toISOString();
   }
 });
 
 
-// SOA Gateway: Route all requests through gateway
+// SOA Gateway: Route all requests through gateway (BEFORE any body parsing middleware)
 app.use("/users", createProxyMiddleware(proxyOptions(USER_SERVICE, "User Service")));
 app.use("/books", createProxyMiddleware(proxyOptions(BOOK_SERVICE, "Book Service")));
 app.use("/borrows", createProxyMiddleware(proxyOptions(BORROW_SERVICE, "Borrow Service")));
