@@ -70,11 +70,4 @@ const errorHandler = (serviceName) => {
   };
 };
 
-/**
- * Handle async errors (wrapper for async route handlers)
- */
-const asyncHandler = (fn) => (req, res, next) => {
-  Promise.resolve(fn(req, res, next)).catch(next);
-};
-
-module.exports = { errorHandler, asyncHandler };
+module.exports = { errorHandler };
