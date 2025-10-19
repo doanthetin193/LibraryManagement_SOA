@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const connectDB = require("../../shared/config/db");
 const logRoutes = require("../logging-service/routes/logRoutes");
 const { errorHandler } = require("../../shared/middlewares/errorHandler");
+const { announceService } = require("../../shared/utils/serviceRegistration");
 
 dotenv.config();
 connectDB("Logging Service");
@@ -14,7 +15,12 @@ app.use(express.json());
 
 // Health check
 app.get("/health", (req, res) => {
-  res.json({ status: "ok", service: "Logging Service", timestamp: new Date().toISOString() });
+  res.json({ 
+    status: "ok", 
+    service: "Logging Service", 
+    timestamp: new Date().toISOString(),
+    port: PORT
+  });
 });
 
 // Routes
@@ -24,6 +30,12 @@ app.use("/", logRoutes);
 app.use(errorHandler("Logging Service"));
 
 const PORT = process.env.LOGGING_PORT || 5004;
-app.listen(PORT, () => {
-  console.log(`🚀 Logging Service running on port ${PORT}`);
+app.listen(PORT, async () => {
+  const serviceInfo = {
+    name: "Logging Service",
+    port: PORT,
+    url: `http://localhost:${PORT}`
+  };
+  
+  await announceService(serviceInfo);
 });

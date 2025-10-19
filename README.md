@@ -10,23 +10,35 @@ Hệ thống quản lý thư viện được xây dựng theo kiến trúc **Ser
 - ✅ **4 Services độc lập**: User, Book, Borrow, Logging
 - ✅ **Database chung**: Tất cả services dùng chung MongoDB `libraryDB`
 - ✅ **API Gateway**: Enterprise Service Bus - routing tất cả requests
-- ✅ **Service Registry**: Tự code, không dùng Consul
+- ✅ **Dynamic Service Registry**: Tự code với auto health monitoring
 - ✅ **Service Communication**: Service-to-service qua Gateway
+- ✅ **Auto Health Monitoring**: Tự động check health mỗi 60 giây (silent mode)
+- ✅ **Auto-Recovery Detection**: Phát hiện tự động khi service phục hồi
 
 ### **Sơ đồ kiến trúc:**
 ```
 Frontend (React)
        ↓
-API Gateway (Port 5000) ← Service Registry
+API Gateway (Port 5000) 
+  ├─ Dynamic Service Registry
+  ├─ Auto Health Monitoring (60s)
+  └─ Health-aware Routing
        ↓
    ┌───┴───┬───────┬──────────┐
    ↓       ↓       ↓          ↓
 User    Book    Borrow    Logging
 5001    5002     5003      5004
+[🟢]    [🟢]    [🟢]      [🟢]
    └───┬───┴───────┴──────────┘
        ↓
 MongoDB (libraryDB - Database chung)
 ```
+
+**Status Icons:**
+- 🟢 healthy: Service hoạt động bình thường
+- 🟡 degraded: Service có vấn đề nhẹ
+- 🔴 down: Service không phản hồi
+- ⚪ unknown: Chưa được check
 
 ---
 
@@ -140,8 +152,36 @@ Mở browser: **http://localhost:5173**
 # Check tất cả services
 npm run health
 
-# Hoặc truy cập:
+# Hoặc truy cập Gateway health endpoint:
 curl http://localhost:5000/health
+
+# Xem Service Registry với real-time status:
+curl http://localhost:5000/registry
+```
+
+**Response mẫu từ /registry:**
+```json
+{
+  "message": "SOA Service Registry",
+  "statistics": {
+    "total": 5,
+    "healthy": 4,
+    "degraded": 0,
+    "down": 0,
+    "unknown": 0
+  },
+  "services": [
+    {
+      "key": "USER_SERVICE",
+      "name": "User Service",
+      "url": "http://localhost:5001",
+      "status": "healthy",
+      "lastCheck": "2025-10-19T10:30:00.000Z",
+      "failureCount": 0
+    }
+    // ... other services
+  ]
+}
 ```
 
 ### **2. Test API:**
@@ -156,6 +196,30 @@ node scripts/test-api.js
 - Xem sách: `/` (trang chủ)
 - Mượn sách: `/borrow`
 - Admin panel: `/admin`
+
+### **4. Monitoring Service Health:**
+
+Khi Gateway chạy, nó sẽ tự động monitor health (silent mode - chỉ log khi có thay đổi):
+```
+🏥 Starting automatic health monitoring (every 60s)
+✅ User Service discovered and healthy
+✅ Book Service discovered and healthy
+✅ Borrow Service discovered and healthy
+✅ Logging Service discovered and healthy
+
+# Nếu service có vấn đề:
+🟡 Book Service is degraded (1 failures)
+
+# Nếu service DOWN:
+🔴 ALERT: Book Service is DOWN!
+   Failures: 3
+   Will keep monitoring for recovery...
+
+# Khi service phục hồi:
+✅ RECOVERY: Book Service is back online!
+```
+
+**Note**: Health checks không hiện trong console khi services healthy (giảm spam).
 
 ---
 
