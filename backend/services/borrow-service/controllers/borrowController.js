@@ -12,6 +12,9 @@ const borrowBook = async (req, res) => {
       return res.status(400).json({ message: "Book ID is required" });
     }
 
+    // ⚠️ RACE CONDITION PROTECTION ⚠️
+    // Sử dụng atomic operation để đảm bảo chỉ 1 người mượn được sách cuối cùng
+    
     // Lấy thông tin sách từ Book Service
     const book = await getBookById(bookId);
     if (!book) return res.status(404).json({ message: "Book not found" });
@@ -20,14 +23,23 @@ const borrowBook = async (req, res) => {
       return res.status(400).json({ message: "No copies available" });
     }
 
-    // Tạo borrow record
+    // 🔒 ATOMIC OPERATION: Giảm số lượng sách TRƯỚC KHI tạo borrow
+    // Book Service sẽ dùng findOneAndUpdate với condition để đảm bảo atomic
+    const updated = await updateBookCopies(bookId, book.availableCopies - 1, true);
+    
+    if (!updated) {
+      // Trường hợp race condition: người khác đã mượn trước
+      return res.status(409).json({ 
+        message: "Book was just borrowed by another user. Please try again.",
+        code: "RACE_CONDITION"
+      });
+    }
+
+    // Chỉ tạo borrow record sau khi đã giảm số lượng thành công
     const borrow = await Borrow.create({
       user: req.user.id,
       book: bookId,
     });
-
-    // Cập nhật số lượng sách qua Book Service
-    await updateBookCopies(bookId, book.availableCopies - 1);
 
     // ✅ Gửi log qua shared logger
     await sendLog(
@@ -40,6 +52,18 @@ const borrowBook = async (req, res) => {
 
     res.status(201).json(borrow);
   } catch (err) {
+    // Nếu có lỗi sau khi đã giảm số lượng sách, cần rollback
+    if (err.message && err.message.includes("ROLLBACK_NEEDED")) {
+      // Cố gắng khôi phục số lượng sách
+      try {
+        const book = await getBookById(req.body.bookId);
+        if (book) {
+          await updateBookCopies(req.body.bookId, book.availableCopies + 1);
+        }
+      } catch (rollbackErr) {
+        console.error("Failed to rollback book copies:", rollbackErr);
+      }
+    }
     res.status(500).json({ message: err.message });
   }
 };

@@ -125,32 +125,60 @@ const getBookById = async (req, res) => {
 };
 
 // PUT /books/:id/copies - Update available copies (for service-to-service calls)
+// 🔒 ATOMIC OPERATION để tránh race condition
 const updateBookCopies = async (req, res) => {
   try {
-    const { availableCopies } = req.body;
+    const { availableCopies, atomic } = req.body;
     
     if (availableCopies < 0) {
       return res.status(400).json({ message: "Available copies cannot be negative" });
     }
 
-    const book = await Book.findByIdAndUpdate(
-      req.params.id, 
-      { availableCopies }, 
-      { new: true }
-    );
-    
-    if (!book) return res.status(404).json({ message: "Book not found" });
+    let book;
+
+    if (atomic === true) {
+      // 🔒 ATOMIC MODE: Chỉ update nếu availableCopies hiện tại > 0
+      // Đảm bảo không có race condition khi 2 người cùng mượn sách cuối cùng
+      book = await Book.findOneAndUpdate(
+        { 
+          _id: req.params.id,
+          availableCopies: { $gt: 0 } // Chỉ update nếu còn sách
+        },
+        { availableCopies },
+        { new: true }
+      );
+
+      if (!book) {
+        // Không tìm thấy sách hoặc không còn sách available
+        return res.status(409).json({ 
+          message: "Book not available for borrowing",
+          code: "NOT_AVAILABLE",
+          success: false
+        });
+      }
+    } else {
+      // Normal mode (cho return book)
+      book = await Book.findByIdAndUpdate(
+        req.params.id, 
+        { availableCopies }, 
+        { new: true }
+      );
+      
+      if (!book) {
+        return res.status(404).json({ message: "Book not found" });
+      }
+    }
 
     // ✅ Ghi log (system operation from other services)
     await sendLog(
       "Book Service",
       "update_book_copies",
       { id: "system", username: "System" },
-      { bookId: book._id, title: book.title, newCopies: availableCopies },
+      { bookId: book._id, title: book.title, newCopies: availableCopies, atomic: atomic || false },
       "info"
     );
 
-    res.json(book);
+    res.json({ success: true, book });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

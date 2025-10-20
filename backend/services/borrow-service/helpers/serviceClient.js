@@ -69,18 +69,30 @@ const getBookById = async (bookId) => {
 
 /**
  * Cập nhật số lượng sách còn lại
+ * 🔒 Hỗ trợ atomic operation để tránh race condition
  * @param {string} bookId - Book ID
  * @param {number} availableCopies - New available copies count
- * @returns {Promise<Object>} Updated book data
+ * @param {boolean} atomic - Nếu true, chỉ update nếu còn sách available (dùng cho borrow)
+ * @returns {Promise<Object|null>} Updated book data, hoặc null nếu atomic fail
  */
-const updateBookCopies = async (bookId, availableCopies) => {
+const updateBookCopies = async (bookId, availableCopies, atomic = false) => {
   try {
     const response = await axios.put(`${BOOK_SERVICE_URL}/${bookId}/copies`, 
-      { availableCopies },
+      { availableCopies, atomic },
       { timeout: 3000 }
     );
+    
+    // Kiểm tra atomic operation success
+    if (atomic && response.data.success === false) {
+      return null; // Race condition: sách đã hết
+    }
+    
     return response.data;
   } catch (error) {
+    // Nếu là 409 (conflict) trong atomic mode, trả về null
+    if (atomic && error.response?.status === 409) {
+      return null;
+    }
     throw new Error(`Failed to update book: ${error.response?.data?.message || error.message}`);
   }
 };
