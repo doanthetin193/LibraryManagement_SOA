@@ -1,6 +1,7 @@
 const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
 const { 
   getServiceUrl, 
   getAllServices, 
@@ -30,6 +31,83 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+// ========== RATE LIMITING CONFIGURATION ==========
+// Giới hạn cho login endpoint - ngăn chặn brute force attack
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 phút
+  max: 5, // Tối đa 5 lần thử đăng nhập
+  message: {
+    success: false,
+    message: "Quá nhiều lần đăng nhập thất bại! Vui lòng thử lại sau 15 phút.",
+    retryAfter: 15 * 60 // 900 giây
+  },
+  standardHeaders: true, // Trả về rate limit info trong headers
+  legacyHeaders: false,
+  handler: (req, res) => {
+    console.log(`⚠️ Rate limit exceeded for IP: ${req.ip} on LOGIN`);
+    res.status(429).json({
+      success: false,
+      message: "Quá nhiều lần đăng nhập thất bại! Vui lòng thử lại sau 15 phút.",
+      retryAfter: 15 * 60
+    });
+  }
+});
+
+// Giới hạn cho register endpoint - ngăn spam tài khoản
+const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 60 phút
+  max: 3, // Tối đa 3 lần đăng ký
+  message: {
+    success: false,
+    message: "Quá nhiều lần đăng ký! Vui lòng thử lại sau 1 giờ.",
+    retryAfter: 60 * 60 // 3600 giây
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    console.log(`⚠️ Rate limit exceeded for IP: ${req.ip} on REGISTER`);
+    res.status(429).json({
+      success: false,
+      message: "Quá nhiều lần đăng ký! Vui lòng thử lại sau 1 giờ.",
+      retryAfter: 60 * 60
+    });
+  }
+});
+
+// Giới hạn chung cho tất cả API - ngăn DDoS
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 phút
+  max: 100, // Tối đa 100 requests
+  message: {
+    success: false,
+    message: "Quá nhiều request! Vui lòng thử lại sau 15 phút.",
+    retryAfter: 15 * 60
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  // Skip rate limit cho health check và registry endpoints
+  skip: (req) => req.path === '/health' || req.path === '/registry',
+  handler: (req, res) => {
+    console.log(`⚠️ Rate limit exceeded for IP: ${req.ip} on ${req.path}`);
+    res.status(429).json({
+      success: false,
+      message: "Quá nhiều request! Vui lòng thử lại sau 15 phút.",
+      retryAfter: 15 * 60
+    });
+  }
+});
+
+// Áp dụng rate limiting
+app.use("/users/login", loginLimiter); // Giới hạn login
+app.use("/users/register", registerLimiter); // Giới hạn register
+app.use(apiLimiter); // Giới hạn chung cho tất cả API
+
+console.log("🛡️ Rate Limiting enabled:");
+console.log("   - Login: 5 requests / 15 minutes");
+console.log("   - Register: 3 requests / 60 minutes");
+console.log("   - General API: 100 requests / 15 minutes");
+// ========== END RATE LIMITING ==========
 
 // SOA Gateway: Dynamic proxy configuration with Consul service discovery
 const createDynamicProxy = (serviceName, displayName) => {
