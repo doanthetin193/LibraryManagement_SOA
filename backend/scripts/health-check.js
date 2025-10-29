@@ -1,6 +1,14 @@
 // backend/scripts/health-check.js
 const axios = require("axios");
-const { HEALTH_ENDPOINTS } = require("../shared/config/services");
+
+// Health endpoints
+const HEALTH_ENDPOINTS = {
+  API_GATEWAY: "http://localhost:5000/health",
+  USER_SERVICE: "http://localhost:5001/health",
+  BOOK_SERVICE: "http://localhost:5002/health",
+  BORROW_SERVICE: "http://localhost:5003/health",
+  LOGGING_SERVICE: "http://localhost:5004/health"
+};
 
 const colors = {
   green: '\x1b[32m',

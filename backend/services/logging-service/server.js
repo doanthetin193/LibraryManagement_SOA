@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 const connectDB = require("../../shared/config/db");
 const logRoutes = require("../logging-service/routes/logRoutes");
 const { errorHandler } = require("../../shared/middlewares/errorHandler");
-const { announceService } = require("../../shared/utils/serviceRegistration");
+const { registerService, setupGracefulShutdown, isConsulAvailable } = require("../../shared/config/consulClient");
 
 dotenv.config();
 connectDB("Logging Service");
@@ -30,12 +30,36 @@ app.use("/", logRoutes);
 app.use(errorHandler("Logging Service"));
 
 const PORT = process.env.LOGGING_PORT || 5004;
+const SERVICE_NAME = "logging-service";
+
 app.listen(PORT, async () => {
-  const serviceInfo = {
-    name: "Logging Service",
-    port: PORT,
-    url: `http://localhost:${PORT}`
-  };
+  console.log(`🚀 Logging Service running on port ${PORT}`);
   
-  await announceService(serviceInfo);
+  // Register with Consul
+  try {
+    const consulAvailable = await isConsulAvailable();
+    
+    if (consulAvailable) {
+      await registerService({
+        id: `${SERVICE_NAME}-${PORT}`,
+        name: SERVICE_NAME,
+        address: "localhost",
+        port: PORT,
+        tags: ["logging", "audit", "monitoring"],
+        check: {
+          http: `http://localhost:${PORT}/health`,
+          interval: "10s",
+          timeout: "5s"
+        }
+      });
+      
+      // Setup graceful shutdown
+      setupGracefulShutdown(`${SERVICE_NAME}-${PORT}`);
+    } else {
+      console.warn("⚠️  Consul not available - service running without registration");
+    }
+  } catch (error) {
+    console.error("❌ Failed to register with Consul:", error.message);
+    console.log("⚠️  Service will continue without Consul registration");
+  }
 });

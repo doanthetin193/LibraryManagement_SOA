@@ -1,8 +1,7 @@
 const axios = require("axios");
-const { getServiceConfig } = require("../config/services");
 
-// Logging service: Direct call to avoid circular dependency through Gateway
-const LOGGING_URL = getServiceConfig("LOGGING_SERVICE").url;
+// Logging service: Direct URL (fallback if Consul not available)
+const LOGGING_URL = process.env.LOGGING_SERVICE_URL || "http://localhost:5004";
 
 /**
  * Gửi log đến Logging Service

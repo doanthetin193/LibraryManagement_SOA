@@ -1,9 +1,8 @@
 // backend/services/borrow-service/helpers/serviceClient.js
 const axios = require("axios");
-const { getServiceConfig } = require("../../../shared/config/services");
 
 // SOA Architecture: Use API Gateway for service-to-service communication
-const API_GATEWAY_URL = getServiceConfig("API_GATEWAY").url;
+const API_GATEWAY_URL = process.env.GATEWAY_URL || "http://localhost:5000";
 const USER_SERVICE_URL = `${API_GATEWAY_URL}/users`;
 const BOOK_SERVICE_URL = `${API_GATEWAY_URL}/books`;
 
