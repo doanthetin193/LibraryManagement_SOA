@@ -330,53 +330,164 @@ const Admin = () => {
   }
 
   return (
-    <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Admin Dashboard
-      </Typography>
+    <Box
+      sx={{
+        minHeight: "calc(100vh - 64px)",
+        background: "linear-gradient(180deg, #f8f9ff 0%, #ffffff 100%)",
+        py: 3,
+      }}
+    >
+      <Container maxWidth="xl">
+        {/* Header */}
+        <Box
+          sx={{
+            textAlign: "center",
+            mb: 3,
+            p: 2,
+            borderRadius: 2,
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            color: "white",
+            boxShadow: 2,
+          }}
+        >
+          <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
+            👑 Admin Dashboard
+          </Typography>
+          <Typography variant="body2" sx={{ opacity: 0.9 }}>
+            Manage your library system
+          </Typography>
+        </Box>
 
-      {/* Dashboard Summary Cards */}
-      <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
-        <Paper sx={{ p: 2, minWidth: 150, textAlign: 'center' }}>
-          <Typography variant="h4" color="primary">
-            {statsLoading ? <CircularProgress size={24} /> : stats.totalUsers}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">Total Users</Typography>
-        </Paper>
-        <Paper sx={{ p: 2, minWidth: 150, textAlign: 'center' }}>
-          <Typography variant="h4" color="secondary">
-            {statsLoading ? <CircularProgress size={24} /> : stats.totalBooks}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">Total Books</Typography>
-        </Paper>
-        <Paper sx={{ p: 2, minWidth: 150, textAlign: 'center' }}>
-          <Typography variant="h4" color="warning.main">
-            {statsLoading ? <CircularProgress size={24} /> : stats.totalBorrows}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">Total Borrows</Typography>
-        </Paper>
-        <Paper sx={{ p: 2, minWidth: 150, textAlign: 'center' }}>
-          <Typography variant="h4" color="info.main">
-            {statsLoading ? <CircularProgress size={24} /> : stats.totalLogs}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">System Logs</Typography>
-        </Paper>
-      </Box>
+        {/* Dashboard Summary Cards */}
+        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(4, 1fr)" }, gap: 3, mb: 4 }}>
+          <Paper
+            elevation={3}
+            sx={{
+              p: 3,
+              textAlign: "center",
+              borderRadius: 3,
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              color: "white",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "translateY(-2px)",
+                boxShadow: 4,
+              },
+            }}
+          >
+            <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
+              {statsLoading ? <CircularProgress size={24} sx={{ color: "white" }} /> : stats.totalUsers}
+            </Typography>
+            <Typography variant="body2" sx={{ opacity: 0.9, fontWeight: 600 }}>
+              👥 Total Users
+            </Typography>
+          </Paper>
 
-      <Tabs value={tab} onChange={(e, newVal) => setTab(newVal)}>
-        <Tab 
-          label={`Logs ${logsPagination.total ? `(${logsPagination.total})` : ''}`} 
-        />
-        <Tab 
-          label={`Borrows ${borrowsPagination.total ? `(${borrowsPagination.total})` : ''}`} 
-        />
-        <Tab 
-          label={`Books ${booksPagination.total ? `(${booksPagination.total})` : ''}`} 
-        />
-        <Tab 
-          label={`Users ${usersPagination.total ? `(${usersPagination.total})` : ''}`} 
-        />
-      </Tabs>
+          <Paper
+            elevation={3}
+            sx={{
+              p: 2.5,
+              textAlign: "center",
+              borderRadius: 3,
+              background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+              color: "white",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "translateY(-2px)",
+                boxShadow: 4,
+              },
+            }}
+          >
+            <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
+              {statsLoading ? <CircularProgress size={24} sx={{ color: "white" }} /> : stats.totalBooks}
+            </Typography>
+            <Typography variant="body2" sx={{ opacity: 0.9, fontWeight: 600 }}>
+              📚 Total Books
+            </Typography>
+          </Paper>
+
+          <Paper
+            elevation={3}
+            sx={{
+              p: 2.5,
+              textAlign: "center",
+              borderRadius: 3,
+              background: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+              color: "white",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "translateY(-2px)",
+                boxShadow: 4,
+              },
+            }}
+          >
+            <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
+              {statsLoading ? <CircularProgress size={24} sx={{ color: "white" }} /> : stats.totalBorrows}
+            </Typography>
+            <Typography variant="body2" sx={{ opacity: 0.9, fontWeight: 600 }}>
+              📖 Total Borrows
+            </Typography>
+          </Paper>
+
+          <Paper
+            elevation={3}
+            sx={{
+              p: 2.5,
+              textAlign: "center",
+              borderRadius: 3,
+              background: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+              color: "white",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "translateY(-2px)",
+                boxShadow: 4,
+              },
+            }}
+          >
+            <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
+              {statsLoading ? <CircularProgress size={24} sx={{ color: "white" }} /> : stats.totalLogs}
+            </Typography>
+            <Typography variant="body2" sx={{ opacity: 0.9, fontWeight: 600 }}>
+              📋 System Logs
+            </Typography>
+          </Paper>
+        </Box>
+
+      <Paper
+        elevation={2}
+        sx={{
+          borderRadius: 3,
+          overflow: "hidden",
+          mb: 3,
+        }}
+      >
+        <Tabs
+          value={tab}
+          onChange={(e, newVal) => setTab(newVal)}
+          variant="fullWidth"
+          sx={{
+            bgcolor: "white",
+            "& .MuiTab-root": {
+              fontWeight: 600,
+              textTransform: "none",
+              fontSize: "1rem",
+              py: 2,
+            },
+            "& .Mui-selected": {
+              color: "#667eea",
+            },
+            "& .MuiTabs-indicator": {
+              height: 3,
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            },
+          }}
+        >
+          <Tab label={`📋 Logs ${logsPagination.total ? `(${logsPagination.total})` : ""}`} />
+          <Tab label={`📖 Borrows ${borrowsPagination.total ? `(${borrowsPagination.total})` : ""}`} />
+          <Tab label={`📚 Books ${booksPagination.total ? `(${booksPagination.total})` : ""}`} />
+          <Tab label={`👥 Users ${usersPagination.total ? `(${usersPagination.total})` : ""}`} />
+        </Tabs>
+      </Paper>
 
       <Box sx={{ mt: 3 }}>
 
@@ -387,7 +498,7 @@ const Admin = () => {
         )}
 
         {tab === 0 && (
-          <Paper>
+          <Paper elevation={2} sx={{ borderRadius: 3, overflow: "hidden" }}>
             <TableContainer>
               <Table>
                 <TableHead>
@@ -440,7 +551,7 @@ const Admin = () => {
         )}
 
         {tab === 1 && (
-          <Paper>
+          <Paper elevation={2} sx={{ borderRadius: 3, overflow: "hidden" }}>
             <TableContainer>
               <Table>
                 <TableHead>
@@ -495,13 +606,23 @@ const Admin = () => {
         )}
 
         {tab === 2 && (
-          <Paper>
-            <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="h6">Books Management</Typography>
+          <Paper elevation={2} sx={{ borderRadius: 3, overflow: "hidden" }}>
+            <Box sx={{ p: 3, display: "flex", justifyContent: "space-between", alignItems: "center", bgcolor: "rgba(102, 126, 234, 0.05)" }}>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                📚 Books Management
+              </Typography>
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
                 onClick={openCreateDialog}
+                sx={{
+                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  textTransform: "none",
+                  fontWeight: 600,
+                  "&:hover": {
+                    background: "linear-gradient(135deg, #5568d3 0%, #653a8a 100%)",
+                  },
+                }}
               >
                 Add New Book
               </Button>
@@ -563,9 +684,11 @@ const Admin = () => {
         )}
 
         {tab === 3 && (
-          <Paper>
-            <Box sx={{ p: 2 }}>
-              <Typography variant="h6">Users Management</Typography>
+          <Paper elevation={2} sx={{ borderRadius: 3, overflow: "hidden" }}>
+            <Box sx={{ p: 3, bgcolor: "rgba(102, 126, 234, 0.05)" }}>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                👥 Users Management
+              </Typography>
             </Box>
             
             <TableContainer>
@@ -692,7 +815,8 @@ const Admin = () => {
           {alert.message}
         </Alert>
       )}
-    </Container>
+      </Container>
+    </Box>
   );
 };
 
