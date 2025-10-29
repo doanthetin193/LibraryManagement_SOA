@@ -26,7 +26,7 @@ app.use(cors({
 // Request logging middleware (skip health checks to reduce noise)
 app.use((req, res, next) => {
   // Only log non-health check requests
-  if (req.path !== '/health' && req.path !== '/registry') {
+  if (req.path !== '/health') {
     console.log(`🔀 Gateway: ${req.method} ${req.path} from ${req.ip}`);
   }
   next();
@@ -78,7 +78,7 @@ const registerLimiter = rateLimit({
 // Giới hạn chung cho tất cả API - ngăn DDoS
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 phút
-  max: 100, // Tối đa 100 requests
+  max: 1000, // Tối đa 1000 requests (tăng lên cho development)
   message: {
     success: false,
     message: "Quá nhiều request! Vui lòng thử lại sau 15 phút.",
@@ -86,8 +86,8 @@ const apiLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  // Skip rate limit cho health check và registry endpoints
-  skip: (req) => req.path === '/health' || req.path === '/registry',
+  // Skip rate limit cho health check endpoint
+  skip: (req) => req.path === '/health',
   handler: (req, res) => {
     console.log(`⚠️ Rate limit exceeded for IP: ${req.ip} on ${req.path}`);
     res.status(429).json({
@@ -106,7 +106,7 @@ app.use(apiLimiter); // Giới hạn chung cho tất cả API
 console.log("🛡️ Rate Limiting enabled:");
 console.log("   - Login: 5 requests / 15 minutes");
 console.log("   - Register: 3 requests / 60 minutes");
-console.log("   - General API: 100 requests / 15 minutes");
+console.log("   - General API: 1000 requests / 15 minutes (development mode)");
 // ========== END RATE LIMITING ==========
 
 // SOA Gateway: Dynamic proxy configuration with Consul service discovery
@@ -146,63 +146,6 @@ app.use("/users", createDynamicProxy("user-service", "User Service"));
 app.use("/books", createDynamicProxy("book-service", "Book Service"));
 app.use("/borrows", createDynamicProxy("borrow-service", "Borrow Service"));
 app.use("/logs", createDynamicProxy("logging-service", "Logging Service"));
-
-
-// SOA Gateway: Service Registry endpoint - Query from Consul
-app.get("/registry", async (req, res) => {
-  try {
-    const services = await getAllServices();
-    
-    // Get detailed health for each service
-    const serviceDetails = await Promise.all(
-      Object.keys(services)
-        .filter(name => name !== 'consul') // Skip consul itself
-        .map(async (serviceName) => {
-          try {
-            const instances = await consul.health.service({ 
-              service: serviceName, 
-              passing: false // Get all instances, not just healthy
-            });
-            
-            return {
-              name: serviceName,
-              instances: instances.length,
-              healthy: instances.filter(i => 
-                i.Checks.every(check => check.Status === 'passing')
-              ).length,
-              tags: instances[0]?.Service?.Tags || [],
-              addresses: instances.map(i => ({
-                address: i.Service.Address,
-                port: i.Service.Port,
-                status: i.Checks.every(check => check.Status === 'passing') ? 'healthy' : 'unhealthy'
-              }))
-            };
-          } catch (error) {
-            return {
-              name: serviceName,
-              instances: 0,
-              healthy: 0,
-              error: error.message
-            };
-          }
-        })
-    );
-    
-    res.json({
-      message: "SOA Service Registry (Powered by Consul)",
-      timestamp: new Date().toISOString(),
-      consulUrl: "http://localhost:8500",
-      totalServices: serviceDetails.length,
-      services: serviceDetails
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to query service registry",
-      error: error.message
-    });
-  }
-});
 
 
 // SOA Gateway: Enhanced health check with Consul registry info
@@ -310,7 +253,6 @@ app.listen(PORT, async () => {
       console.log(`\n✅ Features enabled:`);
       console.log(`   ✓ Consul Service Discovery`);
       console.log(`   ✓ Automatic Health Monitoring (Consul)`);
-      console.log(`   ✓ Service Registry API (/registry)`);
       console.log(`   ✓ Health-aware Routing`);
       console.log(`   ✓ Consul Web UI: http://localhost:8500`);
       

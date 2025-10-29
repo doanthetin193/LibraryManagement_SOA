@@ -186,50 +186,63 @@ const Borrow = () => {
           </Paper>
         ) : (
           // Borrow List
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
             {borrows.map((b) => {
               const statusConfig = getStatusConfig(b.status);
               return (
                 <Paper
                   key={b._id}
-                  elevation={2}
+                  elevation={3}
                   sx={{
-                    p: 3,
                     borderRadius: 3,
+                    overflow: "hidden",
                     transition: "all 0.3s ease",
+                    border: "1px solid rgba(102, 126, 234, 0.1)",
                     "&:hover": {
-                      transform: "translateY(-2px)",
-                      boxShadow: 4,
+                      transform: "translateY(-4px)",
+                      boxShadow: 6,
+                      borderColor: "rgba(102, 126, 234, 0.3)",
                     },
                   }}
                 >
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "start", mb: 2 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                        {b.book?.title || "Unknown Book"}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                        by {b.book?.author || "Unknown Author"}
-                      </Typography>
-                      <Chip
-                        icon={statusConfig.icon}
-                        label={statusConfig.label}
-                        color={statusConfig.color}
-                        size="small"
-                        sx={{ fontWeight: 600 }}
-                      />
-                    </Box>
+                  {/* Status Banner */}
+                  <Box
+                    sx={{
+                      bgcolor: b.status === "returned" 
+                        ? "rgba(76, 175, 80, 0.1)" 
+                        : "rgba(102, 126, 234, 0.1)",
+                      borderBottom: "1px solid",
+                      borderColor: b.status === "returned" 
+                        ? "rgba(76, 175, 80, 0.2)" 
+                        : "rgba(102, 126, 234, 0.2)",
+                      px: 3,
+                      py: 1.5,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Chip
+                      icon={statusConfig.icon}
+                      label={statusConfig.label}
+                      color={statusConfig.color}
+                      size="small"
+                      sx={{ fontWeight: 600 }}
+                    />
                     {b.status === "borrowed" && (
                       <Button
                         variant="contained"
+                        size="small"
                         startIcon={<KeyboardReturn />}
                         onClick={() => handleReturn(b._id)}
                         sx={{
                           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                           textTransform: "none",
                           fontWeight: 600,
+                          boxShadow: 2,
                           "&:hover": {
                             background: "linear-gradient(135deg, #5568d3 0%, #653a8a 100%)",
+                            boxShadow: 3,
                           },
                         }}
                       >
@@ -238,23 +251,120 @@ const Borrow = () => {
                     )}
                   </Box>
 
-                  <Divider sx={{ my: 2 }} />
-
-                  <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <CalendarToday sx={{ fontSize: 18, color: "text.secondary" }} />
-                      <Typography variant="body2" color="text.secondary">
-                        Borrowed: <strong>{formatDate(b.borrowDate)}</strong>
-                      </Typography>
+                  {/* Book Info */}
+                  <Box sx={{ p: 3 }}>
+                    <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+                      {/* Book Icon */}
+                      <Box
+                        sx={{
+                          width: 60,
+                          height: 80,
+                          borderRadius: 2,
+                          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                          boxShadow: 2,
+                        }}
+                      >
+                        <AutoStories sx={{ fontSize: 32, color: "white" }} />
+                      </Box>
+                      
+                      {/* Book Details */}
+                      <Box sx={{ flex: 1 }}>
+                        <Typography 
+                          variant="h6" 
+                          sx={{ 
+                            fontWeight: 700, 
+                            mb: 0.5,
+                            color: "#2c3e50",
+                            lineHeight: 1.3,
+                          }}
+                        >
+                          {b.book?.title || "Unknown Book"}
+                        </Typography>
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: "text.secondary",
+                            fontStyle: "italic",
+                            mb: 1,
+                          }}
+                        >
+                          by {b.book?.author || "Unknown Author"}
+                        </Typography>
+                        {b.book?.genre && (
+                          <Chip
+                            label={b.book.genre}
+                            size="small"
+                            sx={{
+                              bgcolor: "rgba(102, 126, 234, 0.1)",
+                              color: "#667eea",
+                              fontWeight: 600,
+                              fontSize: "0.7rem",
+                            }}
+                          />
+                        )}
+                      </Box>
                     </Box>
-                    {b.returnDate && (
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <CheckCircle sx={{ fontSize: 18, color: "success.main" }} />
-                        <Typography variant="body2" color="text.secondary">
-                          Returned: <strong>{formatDate(b.returnDate)}</strong>
+
+                    <Divider sx={{ my: 2 }} />
+
+                    {/* Dates Info */}
+                    <Box 
+                      sx={{ 
+                        display: "grid",
+                        gridTemplateColumns: b.returnDate ? "1fr 1fr" : "1fr",
+                        gap: 2,
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          p: 1.5,
+                          borderRadius: 2,
+                          bgcolor: "rgba(102, 126, 234, 0.05)",
+                        }}
+                      >
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
+                          <CalendarToday sx={{ fontSize: 16, color: "text.secondary" }} />
+                          <Typography 
+                            variant="caption" 
+                            color="text.secondary" 
+                            sx={{ fontWeight: 600, textTransform: "uppercase" }}
+                          >
+                            Borrowed
+                          </Typography>
+                        </Box>
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                          {formatDate(b.borrowDate)}
                         </Typography>
                       </Box>
-                    )}
+                      
+                      {b.returnDate && (
+                        <Box
+                          sx={{
+                            p: 1.5,
+                            borderRadius: 2,
+                            bgcolor: "rgba(76, 175, 80, 0.05)",
+                          }}
+                        >
+                          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
+                            <CheckCircle sx={{ fontSize: 16, color: "success.main" }} />
+                            <Typography 
+                              variant="caption" 
+                              color="text.secondary" 
+                              sx={{ fontWeight: 600, textTransform: "uppercase" }}
+                            >
+                              Returned
+                            </Typography>
+                          </Box>
+                          <Typography variant="body2" sx={{ fontWeight: 600, color: "success.main" }}>
+                            {formatDate(b.returnDate)}
+                          </Typography>
+                        </Box>
+                      )}
+                    </Box>
                   </Box>
                 </Paper>
               );

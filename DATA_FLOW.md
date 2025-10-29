@@ -566,7 +566,7 @@ Client    Gateway   Borrow    User     Book     Logging   MongoDB
 #### Detailed Steps:
 
 **Step 1-2: Gateway Processing**
-- Rate limit check (100 req/15min)
+- Rate limit check (1000 req/15min - development mode)
 - Query Consul for borrow-service URL
 - Proxy request with headers
 

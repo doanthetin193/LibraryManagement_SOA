@@ -314,41 +314,30 @@ curl http://localhost:5000/health
 
 # Xem Service Registry với real-time status:
 
-### Backendcurl http://localhost:5000/registry
+### Backend
+# Truy cập Consul Web UI
+http://localhost:8500/ui
 
-| Công nghệ | Version | Mục đích |```
+## 🛠️ Công nghệ sử dụng
 
+| Công nghệ | Version | Mục đích |
 |-----------|---------|----------|
+| **Node.js** | ≥18.0.0 | Runtime environment |
+| **Express.js** | 5.1.0 | Web framework |
+| **MongoDB** | latest | Database |
+| **Mongoose** | 8.18.2 | ODM for MongoDB |
+| **Consul** | 2.0.1 | Service discovery & registry |
+| **JWT** | 9.0.2 | Authentication token |
+| **bcryptjs** | 3.0.2 | Password hashing |
+| **express-rate-limit** | 8.2.0 | Rate limiting protection (1000 req/15min dev) |
+| **http-proxy-middleware** | 3.0.5 | API Gateway proxy |
+| **axios** | 1.12.2 | HTTP client |
+| **CORS** | 2.8.5 | Cross-origin resource sharing |
+| **dotenv** | 17.2.2 | Environment variables |
 
-| **Node.js** | ≥18.0.0 | Runtime environment |**Response mẫu từ /registry:**
+### Frontend
 
-| **Express.js** | 5.1.0 | Web framework |```json
-
-| **MongoDB** | latest | Database |{
-
-| **Mongoose** | 8.18.2 | ODM for MongoDB |  "message": "SOA Service Registry",
-
-| **Consul** | 2.0.1 | Service discovery & registry |  "statistics": {
-
-| **JWT** | 9.0.2 | Authentication token |    "total": 5,
-
-| **bcryptjs** | 3.0.2 | Password hashing |    "healthy": 4,
-
-| **express-rate-limit** | 8.2.0 | Rate limiting protection |    "degraded": 0,
-
-| **http-proxy-middleware** | 3.0.5 | API Gateway proxy |    "down": 0,
-
-| **axios** | 1.12.2 | HTTP client |    "unknown": 0
-
-| **CORS** | 2.8.5 | Cross-origin resource sharing |  },
-
-| **dotenv** | 17.2.2 | Environment variables |  "services": [
-
-    {
-
-### Frontend      "key": "USER_SERVICE",
-
-| Công nghệ | Version | Mục đích |      "name": "User Service",
+| Công nghệ | Version | Mục đích |
 
 |-----------|---------|----------|      "url": "http://localhost:5001",
 

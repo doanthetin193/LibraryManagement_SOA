@@ -147,9 +147,9 @@ const Books = () => {
 
         {/* Loading State */}
         {loading ? (
-          <Grid container spacing={2.5}>
+          <Grid container spacing={3} justifyContent="space-evenly">
             {[1, 2, 3, 4, 5, 6].map((item) => (
-              <Grid item xs={12} sm={6} md={4} key={item}>
+              <Grid item xs={12} sm={5.5} md={3.8} key={item}>
                 <Skeleton variant="rectangular" height={340} sx={{ borderRadius: 3 }} />
               </Grid>
             ))}
@@ -178,9 +178,9 @@ const Books = () => {
           </Box>
         ) : (
           // Books Grid
-          <Grid container spacing={2.5}>
+          <Grid container spacing={3} justifyContent="space-evenly" alignItems="stretch">
             {filteredBooks.map((book) => (
-              <Grid item xs={12} sm={6} md={4} key={book._id}>
+              <Grid item xs={12} sm={5.5} md={3.8} key={book._id}>
                 <BookCard book={book} onBorrow={user ? handleBorrow : null} />
               </Grid>
             ))}

@@ -83,7 +83,7 @@ const Profile = () => {
         py: 3,
       }}
     >
-      <Container maxWidth="sm">
+      <Container maxWidth="md">
         {/* Header */}
         <Box
           sx={{
@@ -155,9 +155,9 @@ const Profile = () => {
           <Box sx={{ p: 3 }}>
             <Divider sx={{ mb: 2 }} />
 
-            <Grid container spacing={2}>
+            <Grid container spacing={2} justifyContent="space-evenly" alignItems="stretch">
               {/* Role */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={3.8}>
                 <Box
                   sx={{
                     p: 2,
@@ -185,7 +185,7 @@ const Profile = () => {
               </Grid>
 
               {/* Account Created */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={3.8}>
                 <Box
                   sx={{
                     p: 2,
@@ -216,7 +216,7 @@ const Profile = () => {
               </Grid>
 
               {/* User ID */}
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={3.8}>
                 <Box
                   sx={{
                     p: 2,

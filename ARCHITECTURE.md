@@ -291,14 +291,13 @@ app.get("/health", async (req, res) => {
 
 #### 5. Service Registry Viewer
 
-```javascript
-app.get("/registry", async (req, res) => {
-  const services = await getAllServices();
-  // Returns list of all registered services with health status
-});
-```
-
-**Access:** http://localhost:5000/registry
+**Sử dụng Consul Web UI:**
+- **URL:** http://localhost:8500/ui
+- **Features:**
+  - Real-time service monitoring
+  - Health checks visualization
+  - Service details & tags
+  - Auto-refresh every 10s
 
 ---
 
