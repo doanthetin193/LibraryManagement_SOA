@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("../../shared/config/db");
-const logRoutes = require("../logging-service/routes/logRoutes");
+const logRoutes = require("./routes/logRoutes");
 const { errorHandler } = require("../../shared/middlewares/errorHandler");
 const { registerService, setupGracefulShutdown, isConsulAvailable } = require("../../shared/config/consulClient");
 

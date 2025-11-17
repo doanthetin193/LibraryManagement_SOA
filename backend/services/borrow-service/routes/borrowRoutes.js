@@ -6,26 +6,22 @@ const {
   getMyBorrows,
 } = require("../controllers/borrowController");
 const {
-  authWithUserData,
+  authMiddleware,
   adminOnly,
 } = require("../../../shared/middlewares/authMiddleware");
 
 const router = express.Router();
 
-// Import User model for auth middleware
-const User = require("../../user-service/models/User");
-const protect = authWithUserData(User);
-
 // User mượn sách
-router.post("/", protect, borrowBook);
+router.post("/", authMiddleware, borrowBook);
 
 // User hoặc Admin trả sách
-router.put("/:id/return", protect, returnBook);
+router.put("/:id/return", authMiddleware, returnBook);
 
 // Admin xem toàn bộ lịch sử mượN sách
-router.get("/", protect, adminOnly, getAllBorrows);
+router.get("/", authMiddleware, adminOnly, getAllBorrows);
 
 // User xem danh sách mượn của mình
-router.get("/me", protect, getMyBorrows);
+router.get("/me", authMiddleware, getMyBorrows);
 
 module.exports = router;
