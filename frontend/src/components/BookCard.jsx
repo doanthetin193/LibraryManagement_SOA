@@ -27,29 +27,54 @@ const BookCard = ({ book, onBorrow }) => {
         display: "flex",
         flexDirection: "column",
         borderRadius: 3,
-        boxShadow: 2,
+        boxShadow: "0 4px 12px rgba(26, 35, 126, 0.12)",
+        border: "1px solid rgba(26, 35, 126, 0.08)",
+        overflow: "hidden",
         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         "&:hover": {
-          boxShadow: 4,
-          transform: "translateY(-4px)",
+          boxShadow: "0 12px 24px rgba(26, 35, 126, 0.2)",
+          transform: "translateY(-8px)",
+          borderColor: "rgba(255, 215, 0, 0.3)",
         },
       }}
     >
-      {/* Header with gradient */}
+      {/* Header with premium gradient */}
       <Box
         sx={{
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          p: 2,
+          background: "linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%)",
+          p: 2.5,
           color: "white",
+          position: "relative",
+          "&::after": {
+            content: '""',
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "3px",
+            background: "linear-gradient(90deg, #ffd700 0%, #ffed4e 100%)",
+          },
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1, mb: 1 }}>
-          <BookIcon sx={{ fontSize: 24, mt: 0.3, flexShrink: 0 }} />
+        <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5, mb: 1.5 }}>
+          <Box
+            sx={{
+              bgcolor: "rgba(255, 215, 0, 0.2)",
+              borderRadius: 1.5,
+              p: 0.8,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <BookIcon sx={{ fontSize: 24, color: "#ffd700" }} />
+          </Box>
           <Typography
             variant="subtitle1"
             sx={{
               fontWeight: 700,
               lineHeight: 1.3,
+              flex: 1,
               overflow: "hidden",
               textOverflow: "ellipsis",
               display: "-webkit-box",
@@ -64,11 +89,12 @@ const BookCard = ({ book, onBorrow }) => {
           label={isAvailable ? "Available" : "Out of Stock"}
           size="small"
           sx={{
-            bgcolor: isAvailable ? "rgba(76, 175, 80, 0.9)" : "rgba(244, 67, 54, 0.9)",
+            bgcolor: isAvailable ? "#2e7d32" : "#d32f2f",
             color: "white",
             fontWeight: 600,
             fontSize: "0.7rem",
-            height: 22,
+            height: 24,
+            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
           }}
         />
       </Box>
@@ -144,14 +170,19 @@ const BookCard = ({ book, onBorrow }) => {
             variant="contained"
             onClick={() => onBorrow(book._id)}
             sx={{
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              background: "linear-gradient(135deg, #1a237e 0%, #3949ab 100%)",
               fontWeight: 600,
               textTransform: "none",
-              py: 1,
+              py: 1.2,
               fontSize: "0.875rem",
+              borderRadius: 2,
+              boxShadow: "0 4px 12px rgba(26, 35, 126, 0.25)",
               "&:hover": {
-                background: "linear-gradient(135deg, #5568d3 0%, #653a8a 100%)",
+                background: "linear-gradient(135deg, #000051 0%, #283593 100%)",
+                boxShadow: "0 6px 16px rgba(26, 35, 126, 0.35)",
+                transform: "translateY(-2px)",
               },
+              transition: "all 0.2s",
             }}
           >
             Borrow Book
@@ -163,8 +194,9 @@ const BookCard = ({ book, onBorrow }) => {
             disabled
             sx={{
               textTransform: "none",
-              py: 1,
+              py: 1.2,
               fontSize: "0.875rem",
+              borderRadius: 2,
             }}
           >
             Unavailable

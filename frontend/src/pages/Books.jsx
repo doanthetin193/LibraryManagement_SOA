@@ -89,8 +89,8 @@ const Books = () => {
     <Box
       sx={{
         minHeight: "calc(100vh - 64px)",
-        background: "linear-gradient(180deg, #f8f9ff 0%, #ffffff 100%)",
-        py: 3,
+        background: "linear-gradient(180deg, #f5f7fa 0%, #ffffff 50%, #f5f7fa 100%)",
+        py: 4,
       }}
     >
       <Container maxWidth="lg">
@@ -98,20 +98,43 @@ const Books = () => {
         <Box
           sx={{
             textAlign: "center",
-            mb: 3,
-            p: 2,
-            borderRadius: 2,
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            mb: 4,
+            p: 4,
+            borderRadius: 3,
+            background: "linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%)",
             color: "white",
-            boxShadow: 2,
+            boxShadow: "0 12px 24px rgba(26, 35, 126, 0.2)",
+            position: "relative",
+            overflow: "hidden",
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              height: "4px",
+              background: "linear-gradient(90deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%)",
+            },
           }}
         >
-          <LibraryBooks sx={{ fontSize: 40, mb: 1 }} />
-          <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
+          <Box
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              bgcolor: "rgba(255, 215, 0, 0.2)",
+              borderRadius: 3,
+              p: 2,
+              mb: 2,
+            }}
+          >
+            <LibraryBooks sx={{ fontSize: 48, color: "#ffd700" }} />
+          </Box>
+          <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
             Library Collection
           </Typography>
-          <Typography variant="body2" sx={{ opacity: 0.9 }}>
-            Explore our {books.length} books and find your next favorite read
+          <Typography variant="body1" sx={{ opacity: 0.95, fontSize: "1.1rem" }}>
+            Explore our collection of {books.length} books and find your next favorite read
           </Typography>
         </Box>
 
@@ -125,20 +148,23 @@ const Books = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <Search color="action" />
+                  <Search sx={{ color: "#1a237e" }} />
                 </InputAdornment>
               ),
             }}
             sx={{
               bgcolor: "white",
-              borderRadius: 2,
+              borderRadius: 3,
+              boxShadow: "0 4px 12px rgba(26, 35, 126, 0.08)",
               "& .MuiOutlinedInput-root": {
-                borderRadius: 2,
+                borderRadius: 3,
+                fontSize: "1rem",
                 "&:hover fieldset": {
-                  borderColor: "#667eea",
+                  borderColor: "#3949ab",
                 },
                 "&.Mui-focused fieldset": {
-                  borderColor: "#667eea",
+                  borderColor: "#1a237e",
+                  borderWidth: "2px",
                 },
               },
             }}

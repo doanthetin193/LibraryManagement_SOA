@@ -134,18 +134,29 @@ const Borrow = () => {
           sx={{
             textAlign: "center",
             mb: 3,
-            p: 2,
-            borderRadius: 2,
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            p: 3,
+            borderRadius: 3,
+            background: "linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%)",
             color: "white",
-            boxShadow: 2,
+            boxShadow: "0 8px 24px rgba(26, 35, 126, 0.25)",
+            position: "relative",
+            "::before": {
+              content: '""',
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              height: "4px",
+              background: "linear-gradient(90deg, #ffd700 0%, #ffed4e 100%)",
+              borderRadius: "3px 3px 0 0",
+            },
           }}
         >
-          <MenuBook sx={{ fontSize: 40, mb: 1 }} />
-          <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
+          <MenuBook sx={{ fontSize: 48, mb: 1, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))" }} />
+          <Typography variant="h4" sx={{ fontWeight: 800, mb: 0.5 }}>
             My Borrow History
           </Typography>
-          <Typography variant="body2" sx={{ opacity: 0.9 }}>
+          <Typography variant="body1" sx={{ opacity: 0.95, fontWeight: 500 }}>
             Track your borrowed books and returns
           </Typography>
         </Box>
@@ -171,13 +182,16 @@ const Borrow = () => {
               variant="contained"
               onClick={() => navigate("/")}
               sx={{
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                background: "linear-gradient(135deg, #1a237e 0%, #3949ab 100%)",
                 textTransform: "none",
-                fontWeight: 600,
+                fontWeight: 700,
                 px: 4,
                 py: 1.5,
+                boxShadow: "0 6px 16px rgba(26, 35, 126, 0.3)",
                 "&:hover": {
-                  background: "linear-gradient(135deg, #5568d3 0%, #653a8a 100%)",
+                  background: "linear-gradient(135deg, #0d1444 0%, #283593 100%)",
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 8px 20px rgba(26, 35, 126, 0.4)",
                 },
               }}
             >
@@ -197,11 +211,11 @@ const Borrow = () => {
                     borderRadius: 3,
                     overflow: "hidden",
                     transition: "all 0.3s ease",
-                    border: "1px solid rgba(102, 126, 234, 0.1)",
+                    border: "1px solid rgba(26, 35, 126, 0.15)",
                     "&:hover": {
                       transform: "translateY(-4px)",
-                      boxShadow: 6,
-                      borderColor: "rgba(102, 126, 234, 0.3)",
+                      boxShadow: "0 12px 28px rgba(26, 35, 126, 0.2)",
+                      borderColor: "rgba(255, 215, 0, 0.4)",
                     },
                   }}
                 >
@@ -210,11 +224,11 @@ const Borrow = () => {
                     sx={{
                       bgcolor: b.status === "returned" 
                         ? "rgba(76, 175, 80, 0.1)" 
-                        : "rgba(102, 126, 234, 0.1)",
+                        : "rgba(26, 35, 126, 0.08)",
                       borderBottom: "1px solid",
                       borderColor: b.status === "returned" 
                         ? "rgba(76, 175, 80, 0.2)" 
-                        : "rgba(102, 126, 234, 0.2)",
+                        : "rgba(26, 35, 126, 0.15)",
                       px: 3,
                       py: 1.5,
                       display: "flex",
@@ -236,13 +250,14 @@ const Borrow = () => {
                         startIcon={<KeyboardReturn />}
                         onClick={() => handleReturn(b._id)}
                         sx={{
-                          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                          background: "linear-gradient(135deg, #1a237e 0%, #3949ab 100%)",
                           textTransform: "none",
-                          fontWeight: 600,
-                          boxShadow: 2,
+                          fontWeight: 700,
+                          boxShadow: "0 4px 12px rgba(26, 35, 126, 0.3)",
                           "&:hover": {
-                            background: "linear-gradient(135deg, #5568d3 0%, #653a8a 100%)",
-                            boxShadow: 3,
+                            background: "linear-gradient(135deg, #0d1444 0%, #283593 100%)",
+                            transform: "translateY(-1px)",
+                            boxShadow: "0 6px 16px rgba(26, 35, 126, 0.4)",
                           },
                         }}
                       >
@@ -260,12 +275,22 @@ const Borrow = () => {
                           width: 60,
                           height: 80,
                           borderRadius: 2,
-                          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                          background: "linear-gradient(135deg, #1a237e 0%, #3949ab 100%)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           flexShrink: 0,
-                          boxShadow: 2,
+                          boxShadow: "0 4px 12px rgba(26, 35, 126, 0.3)",
+                          position: "relative",
+                          "::after": {
+                            content: '""',
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            width: "3px",
+                            height: "100%",
+                            background: "#ffd700",
+                          },
                         }}
                       >
                         <AutoStories sx={{ fontSize: 32, color: "white" }} />
@@ -299,10 +324,11 @@ const Borrow = () => {
                             label={b.book.genre}
                             size="small"
                             sx={{
-                              bgcolor: "rgba(102, 126, 234, 0.1)",
-                              color: "#667eea",
-                              fontWeight: 600,
+                              bgcolor: "rgba(26, 35, 126, 0.08)",
+                              color: "#1a237e",
+                              fontWeight: 700,
                               fontSize: "0.7rem",
+                              border: "1px solid rgba(26, 35, 126, 0.2)",
                             }}
                           />
                         )}
@@ -323,7 +349,7 @@ const Borrow = () => {
                         sx={{
                           p: 1.5,
                           borderRadius: 2,
-                          bgcolor: "rgba(102, 126, 234, 0.05)",
+                          bgcolor: "rgba(26, 35, 126, 0.05)",
                         }}
                       >
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
@@ -380,7 +406,8 @@ const Borrow = () => {
               p: 2,
               textAlign: "center",
               borderRadius: 2,
-              bgcolor: "rgba(102, 126, 234, 0.1)",
+              background: "linear-gradient(135deg, rgba(26, 35, 126, 0.08) 0%, rgba(57, 73, 171, 0.05) 100%)",
+              border: "1px solid rgba(255, 215, 0, 0.2)",
             }}
           >
             <Typography variant="body2" color="text.secondary">

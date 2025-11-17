@@ -35,12 +35,15 @@ const Navbar = () => {
   return (
     <AppBar
       position="static"
+      elevation={0}
       sx={{
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+        background: "linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%)",
+        boxShadow: "0 8px 32px rgba(26, 35, 126, 0.25)",
+        backdropFilter: "blur(10px)",
+        borderBottom: "1px solid rgba(255, 215, 0, 0.1)",
       }}
     >
-      <Toolbar sx={{ py: 1 }}>
+      <Toolbar sx={{ py: 1.5, px: { xs: 2, sm: 3 } }}>
         {/* Logo / Brand */}
         <Box
           component={Link}
@@ -52,16 +55,36 @@ const Navbar = () => {
             textDecoration: "none",
             color: "inherit",
             flexGrow: 1,
+            transition: "transform 0.2s",
+            "&:hover": {
+              transform: "scale(1.02)",
+            },
           }}
         >
-          <MenuBook sx={{ fontSize: 32 }} />
+          <Box
+            sx={{
+              background: "linear-gradient(135deg, #ffd700 0%, #ffed4e 100%)",
+              borderRadius: 2,
+              p: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 4px 12px rgba(255, 215, 0, 0.3)",
+            }}
+          >
+            <MenuBook sx={{ fontSize: 28, color: "#1a237e" }} />
+          </Box>
           <Box>
             <Typography
               variant="h6"
               sx={{
                 fontWeight: 700,
-                lineHeight: 1,
-                letterSpacing: 0.5,
+                lineHeight: 1.2,
+                letterSpacing: 0.3,
+                background: "linear-gradient(135deg, #ffffff 0%, #ffd700 100%)",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
               }}
             >
               Library Management
@@ -69,9 +92,11 @@ const Navbar = () => {
             <Typography
               variant="caption"
               sx={{
-                opacity: 0.9,
-                fontSize: "0.7rem",
-                letterSpacing: 1,
+                opacity: 0.85,
+                fontSize: "0.65rem",
+                letterSpacing: 2,
+                color: "#ffd700",
+                fontWeight: 500,
               }}
             >
               SOA ARCHITECTURE
@@ -89,9 +114,13 @@ const Navbar = () => {
             sx={{
               textTransform: "none",
               fontWeight: 600,
+              borderRadius: 2,
+              px: 2,
               "&:hover": {
-                bgcolor: "rgba(255,255,255,0.1)",
+                bgcolor: "rgba(255, 215, 0, 0.15)",
+                transform: "translateY(-1px)",
               },
+              transition: "all 0.2s",
             }}
           >
             Books
@@ -106,9 +135,13 @@ const Navbar = () => {
               sx={{
                 textTransform: "none",
                 fontWeight: 600,
+                borderRadius: 2,
+                px: 2,
                 "&:hover": {
-                  bgcolor: "rgba(255,255,255,0.1)",
+                  bgcolor: "rgba(255, 215, 0, 0.15)",
+                  transform: "translateY(-1px)",
                 },
+                transition: "all 0.2s",
               }}
             >
               My Borrows
@@ -124,9 +157,13 @@ const Navbar = () => {
               sx={{
                 textTransform: "none",
                 fontWeight: 600,
+                borderRadius: 2,
+                px: 2,
                 "&:hover": {
-                  bgcolor: "rgba(255,255,255,0.1)",
+                  bgcolor: "rgba(255, 215, 0, 0.15)",
+                  transform: "translateY(-1px)",
                 },
+                transition: "all 0.2s",
               }}
             >
               Profile
@@ -142,10 +179,16 @@ const Navbar = () => {
               sx={{
                 textTransform: "none",
                 fontWeight: 600,
-                bgcolor: "rgba(255,215,0,0.2)",
+                borderRadius: 2,
+                px: 2,
+                bgcolor: "rgba(255, 215, 0, 0.25)",
+                border: "1px solid rgba(255, 215, 0, 0.5)",
                 "&:hover": {
-                  bgcolor: "rgba(255,215,0,0.3)",
+                  bgcolor: "rgba(255, 215, 0, 0.35)",
+                  borderColor: "rgba(255, 215, 0, 0.7)",
+                  transform: "translateY(-1px)",
                 },
+                transition: "all 0.2s",
               }}
             >
               Admin
@@ -163,11 +206,16 @@ const Navbar = () => {
                 sx={{
                   textTransform: "none",
                   fontWeight: 600,
-                  borderColor: "rgba(255,255,255,0.5)",
+                  borderRadius: 2,
+                  px: 2.5,
+                  borderColor: "rgba(255, 215, 0, 0.5)",
+                  color: "#ffd700",
                   "&:hover": {
-                    borderColor: "white",
-                    bgcolor: "rgba(255,255,255,0.1)",
+                    borderColor: "#ffd700",
+                    bgcolor: "rgba(255, 215, 0, 0.1)",
+                    transform: "translateY(-1px)",
                   },
+                  transition: "all 0.2s",
                 }}
               >
                 Login
@@ -180,32 +228,46 @@ const Navbar = () => {
                 sx={{
                   textTransform: "none",
                   fontWeight: 600,
-                  bgcolor: "white",
-                  color: "primary.main",
+                  borderRadius: 2,
+                  px: 2.5,
+                  background: "linear-gradient(135deg, #ffd700 0%, #ffed4e 100%)",
+                  color: "#1a237e",
+                  boxShadow: "0 4px 12px rgba(255, 215, 0, 0.3)",
                   "&:hover": {
-                    bgcolor: "rgba(255,255,255,0.9)",
+                    background: "linear-gradient(135deg, #ffed4e 0%, #fff176 100%)",
+                    boxShadow: "0 6px 16px rgba(255, 215, 0, 0.4)",
+                    transform: "translateY(-2px)",
                   },
+                  transition: "all 0.2s",
                 }}
               >
                 Register
               </Button>
             </>
           ) : (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, ml: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, ml: 2 }}>
               <Chip
                 avatar={
-                  <Avatar sx={{ bgcolor: "white", color: "primary.main" }}>
+                  <Avatar
+                    sx={{
+                      bgcolor: "linear-gradient(135deg, #ffd700 0%, #ffed4e 100%)",
+                      color: "#1a237e",
+                      fontWeight: 700,
+                    }}
+                  >
                     {user?.username?.[0]?.toUpperCase() || "U"}
                   </Avatar>
                 }
                 label={user?.username || "User"}
                 sx={{
-                  bgcolor: "rgba(255,255,255,0.2)",
+                  bgcolor: "rgba(255, 255, 255, 0.15)",
+                  backdropFilter: "blur(10px)",
                   color: "white",
                   fontWeight: 600,
+                  border: "1px solid rgba(255, 215, 0, 0.3)",
                   "& .MuiChip-avatar": {
-                    width: 28,
-                    height: 28,
+                    width: 32,
+                    height: 32,
                   },
                 }}
               />
@@ -213,9 +275,12 @@ const Navbar = () => {
                 color="inherit"
                 onClick={handleLogout}
                 sx={{
+                  bgcolor: "rgba(255, 215, 0, 0.1)",
                   "&:hover": {
-                    bgcolor: "rgba(255,255,255,0.1)",
+                    bgcolor: "rgba(255, 215, 0, 0.2)",
+                    transform: "rotate(10deg)",
                   },
+                  transition: "all 0.2s",
                 }}
                 title="Logout"
               >

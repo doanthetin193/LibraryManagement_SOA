@@ -89,18 +89,29 @@ const Profile = () => {
           sx={{
             textAlign: "center",
             mb: 3,
-            p: 2,
-            borderRadius: 2,
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            p: 3,
+            borderRadius: 3,
+            background: "linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%)",
             color: "white",
-            boxShadow: 2,
+            boxShadow: "0 8px 24px rgba(26, 35, 126, 0.25)",
+            position: "relative",
+            "::before": {
+              content: '""',
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              height: "4px",
+              background: "linear-gradient(90deg, #ffd700 0%, #ffed4e 100%)",
+              borderRadius: "3px 3px 0 0",
+            },
           }}
         >
-          <MenuBook sx={{ fontSize: 40, mb: 1 }} />
-          <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
+          <MenuBook sx={{ fontSize: 48, mb: 1, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))" }} />
+          <Typography variant="h4" sx={{ fontWeight: 800, mb: 0.5 }}>
             My Profile
           </Typography>
-          <Typography variant="body2" sx={{ opacity: 0.9 }}>
+          <Typography variant="body1" sx={{ opacity: 0.95, fontWeight: 500 }}>
             View your account information
           </Typography>
         </Box>
@@ -116,37 +127,51 @@ const Profile = () => {
           {/* Avatar Section */}
           <Box
             sx={{
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-              p: 3,
+              background: "linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%)",
+              p: 4,
               textAlign: "center",
+              position: "relative",
+              "::after": {
+                content: '""',
+                position: "absolute",
+                bottom: 0,
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: "60px",
+                height: "3px",
+                background: "#ffd700",
+                borderRadius: "3px 3px 0 0",
+              },
             }}
           >
             <Avatar
               sx={{
-                width: 70,
-                height: 70,
+                width: 90,
+                height: 90,
                 margin: "0 auto",
-                fontSize: 32,
-                fontWeight: 700,
+                fontSize: 40,
+                fontWeight: 800,
                 bgcolor: "white",
-                color: "#667eea",
-                boxShadow: 2,
+                color: "#1a237e",
+                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
+                border: "3px solid #ffd700",
               }}
             >
               {profile?.username?.[0]?.toUpperCase() || "U"}
             </Avatar>
-            <Typography variant="h6" sx={{ mt: 1.5, color: "white", fontWeight: 700 }}>
+            <Typography variant="h5" sx={{ mt: 2, color: "white", fontWeight: 800 }}>
               {profile?.username}
             </Typography>
             <Chip
-              icon={roleConfig.icon}
               label={roleConfig.label}
               color={roleConfig.color}
-              size="small"
+              size="medium"
               sx={{
                 mt: 1.5,
-                fontWeight: 600,
-                bgcolor: "rgba(255,255,255,0.9)",
+                fontWeight: 700,
+                bgcolor: "rgba(255,255,255,0.95)",
+                fontSize: "0.9rem",
+                px: 1,
               }}
             />
           </Box>
@@ -162,10 +187,14 @@ const Profile = () => {
                   sx={{
                     p: 2,
                     borderRadius: 2,
-                    bgcolor: "rgba(102, 126, 234, 0.05)",
+                    bgcolor: "rgba(26, 35, 126, 0.04)",
+                    border: "1px solid rgba(26, 35, 126, 0.1)",
                     transition: "all 0.2s",
                     "&:hover": {
-                      bgcolor: "rgba(102, 126, 234, 0.08)",
+                      bgcolor: "rgba(26, 35, 126, 0.08)",
+                      borderColor: "rgba(255, 215, 0, 0.3)",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 4px 12px rgba(26, 35, 126, 0.15)",
                     },
                   }}
                 >
@@ -190,10 +219,14 @@ const Profile = () => {
                   sx={{
                     p: 2,
                     borderRadius: 2,
-                    bgcolor: "rgba(102, 126, 234, 0.05)",
+                    bgcolor: "rgba(26, 35, 126, 0.04)",
+                    border: "1px solid rgba(26, 35, 126, 0.1)",
                     transition: "all 0.2s",
                     "&:hover": {
-                      bgcolor: "rgba(102, 126, 234, 0.08)",
+                      bgcolor: "rgba(26, 35, 126, 0.08)",
+                      borderColor: "rgba(255, 215, 0, 0.3)",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 4px 12px rgba(26, 35, 126, 0.15)",
                     },
                   }}
                 >
@@ -221,10 +254,14 @@ const Profile = () => {
                   sx={{
                     p: 2,
                     borderRadius: 2,
-                    bgcolor: "rgba(102, 126, 234, 0.05)",
+                    bgcolor: "rgba(26, 35, 126, 0.04)",
+                    border: "1px solid rgba(26, 35, 126, 0.1)",
                     transition: "all 0.2s",
                     "&:hover": {
-                      bgcolor: "rgba(102, 126, 234, 0.08)",
+                      bgcolor: "rgba(26, 35, 126, 0.08)",
+                      borderColor: "rgba(255, 215, 0, 0.3)",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 4px 12px rgba(26, 35, 126, 0.15)",
                     },
                   }}
                 >

@@ -68,44 +68,65 @@ const Login = () => {
     <Box
       sx={{
         minHeight: "calc(100vh - 64px)",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background: "linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%)",
         display: "flex",
         alignItems: "center",
         py: 4,
+        position: "relative",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffd700\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+          opacity: 0.4,
+        },
       }}
     >
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" sx={{ position: "relative", zIndex: 1 }}>
         <Paper
-          elevation={10}
+          elevation={0}
           sx={{
-            p: 4,
-            borderRadius: 3,
-            backdropFilter: "blur(10px)",
+            p: 5,
+            borderRadius: 4,
+            backdropFilter: "blur(20px)",
+            bgcolor: "rgba(255, 255, 255, 0.95)",
+            boxShadow: "0 20px 60px rgba(26, 35, 126, 0.3)",
+            border: "1px solid rgba(255, 215, 0, 0.2)",
           }}
         >
           {/* Header */}
-          <Box sx={{ textAlign: "center", mb: 3 }}>
-            <MenuBook
+          <Box sx={{ textAlign: "center", mb: 4 }}>
+            <Box
               sx={{
-                fontSize: 48,
-                color: "primary.main",
-                mb: 1.5,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "linear-gradient(135deg, #1a237e 0%, #3949ab 100%)",
+                borderRadius: 3,
+                p: 2,
+                mb: 2,
+                boxShadow: "0 8px 16px rgba(26, 35, 126, 0.2)",
               }}
-            />
+            >
+              <MenuBook sx={{ fontSize: 48, color: "#ffd700" }} />
+            </Box>
             <Typography
-              variant="h5"
+              variant="h4"
               sx={{
                 fontWeight: 700,
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                background: "linear-gradient(135deg, #1a237e 0%, #3949ab 100%)",
                 backgroundClip: "text",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
-                mb: 0.5,
+                mb: 1,
               }}
             >
               Welcome Back
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body1" color="text.secondary" sx={{ fontSize: "1.05rem" }}>
               Sign in to access your library account
             </Typography>
           </Box>
@@ -182,14 +203,18 @@ const Login = () => {
               sx={{
                 mt: 3,
                 py: 1.5,
-                borderRadius: 2,
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                borderRadius: 3,
+                background: "linear-gradient(135deg, #1a237e 0%, #3949ab 100%)",
                 fontWeight: 600,
                 textTransform: "none",
-                fontSize: "1rem",
+                fontSize: "1.05rem",
+                boxShadow: "0 8px 16px rgba(26, 35, 126, 0.25)",
                 "&:hover": {
-                  background: "linear-gradient(135deg, #5568d3 0%, #653a8a 100%)",
+                  background: "linear-gradient(135deg, #000051 0%, #283593 100%)",
+                  boxShadow: "0 12px 24px rgba(26, 35, 126, 0.35)",
+                  transform: "translateY(-2px)",
                 },
+                transition: "all 0.2s",
               }}
             >
               {loading ? "Signing in..." : "Sign In"}
